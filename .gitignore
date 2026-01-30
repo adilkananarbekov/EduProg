@@ -1,0 +1,164 @@
+# ===========================
+# EdupageProject .gitignore
+# ===========================
+
+# =====================
+# Java / Maven (Backend)
+# =====================
+backend/target/
+backend/*.jar
+backend/*.war
+backend/*.class
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# Maven
+backend/pom.xml.tag
+backend/pom.xml.releaseBackup
+backend/pom.xml.versionsBackup
+backend/pom.xml.next
+backend/release.properties
+
+# =====================
+# Node.js / React / Vite (Frontend)
+# =====================
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.cache/
+
+# Dependency directories
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Vite
+frontend/*.local
+*.local
+
+# =====================
+# IDE & Editors
+# =====================
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# NetBeans
+nbproject/
+nbbuild/
+nbdist/
+
+# =====================
+# Operating System
+# =====================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# =====================
+# Environment & Secrets
+# =====================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Secret files
+*.pem
+*.key
+*.p12
+*.jks
+
+# =====================
+# Docker
+# =====================
+# Docker volumes data (if stored locally)
+docker-data/
+postgres-data/
+
+# =====================
+# Logs & Temp Files
+# =====================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Temp files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# =====================
+# Testing & Coverage
+# =====================
+coverage/
+*.lcov
+.nyc_output/
+
+# Backend test reports
+backend/surefire-reports/
+backend/failsafe-reports/
+
+# =====================
+# Package Manager Locks (Optional)
+# =====================
+# Uncomment if you don't want to commit lock files
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# =====================
+# Miscellaneous
+# =====================
+# Ignore generated API docs
+api-docs/
+swagger-output/
+
+# Local database files
+*.db
+*.sqlite
+
+# Backup files
+*.bak
+*.backup
+
+# Compressed files (optional)
+# *.zip
+# *.tar.gz
+# *.rar

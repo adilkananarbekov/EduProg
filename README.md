@@ -43,39 +43,16 @@ docker-compose up --build
 # Access the application
 # Frontend: http://localhost:5173
 # Backend API: http://localhost:8080
-```
 
 ### Local Development
 
 #### Backend
 
 ```bash
-cd backend
-
-# Start PostgreSQL (required)
-docker run -d \
-  --name edupage-db \
-  -e POSTGRES_DB=edupage \
-  -e POSTGRES_USER=edupage \
-  -e POSTGRES_PASSWORD=edupage123 \
-  -p 5432:5432 \
-  postgres:15-alpine
-
-# Run the backend
-./mvnw spring-boot:run
+    cd C:\Users\Adilkan\Documents\EdupageProject
+    .\manage.ps1 start
 ```
 
-#### Frontend
-
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
 
 ## Demo Credentials
 
@@ -146,3 +123,14 @@ edupagel/
 ## License
 
 MIT License
+
+<!-- Quick start -->
+
+```bash
+    cd C:\Users\Adilkan\Documents\EdupageProject
+    .\manage.ps1 start
+```
+
+<!-- Swagger -->
+
+http://localhost:8080/swagger-ui.html

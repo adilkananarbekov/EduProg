@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: edupage
       POSTGRES_PASSWORD: edupage123
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -23,8 +23,9 @@ services:
     container_name: edupage-backend
     ports:
       - "8080:8080"
+    restart: on-failure
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/edupage
+      SPRING_DATASOURCE_URL: jdbc:postgresql://edupage-postgres:5432/edupage
       SPRING_DATASOURCE_USERNAME: edupage
       SPRING_DATASOURCE_PASSWORD: edupage123
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
