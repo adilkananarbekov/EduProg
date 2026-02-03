@@ -38,19 +38,11 @@ services:
     networks:
       - edupage-network
 
-  frontend:
-    build: ./frontend
-    container_name: edupage-frontend
-    ports:
-      - "5173:80"
-    depends_on:
-      - backend
-    networks:
-      - edupage-network
-
 networks:
   edupage-network:
     driver: bridge
 
 volumes:
   postgres_data:
+
+

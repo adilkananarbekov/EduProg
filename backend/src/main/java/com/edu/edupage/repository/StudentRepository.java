@@ -15,4 +15,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByClassGroup(ClassGroup classGroup);
 
     List<Student> findByClassGroupId(Long classGroupId);
+    
+    int countByClassGroupId(Long classGroupId);
+    
+    List<Student> findByClassGroupIsNull();
 }

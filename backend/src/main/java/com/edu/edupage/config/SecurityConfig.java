@@ -36,8 +36,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
+                        .requestMatchers("/actuator/**", "/actuator/health").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs.yaml")
+                        .permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Public library book browsing (no auth required)
+                        .requestMatchers(HttpMethod.GET, "/api/library/books/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/schedule/class/**").permitAll()
                         // Shared endpoints for Teachers and Admins
                         .requestMatchers("/api/admin/students/class/**").hasAnyRole("TEACHER", "ADMIN")
                         .requestMatchers("/api/admin/class-groups").hasAnyRole("TEACHER", "ADMIN")
