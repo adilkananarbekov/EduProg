@@ -27,8 +27,14 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
         @Query("SELECT s FROM Schedule s WHERE s.classGroup.id = :classGroupId ORDER BY s.dayOfWeek, s.startTime")
         List<Schedule> findWeeklyScheduleByClassGroup(@Param("classGroupId") Long classGroupId);
 
+        @Query("SELECT s FROM Schedule s WHERE s.classGroup.id = :classGroupId AND s.dayOfWeek = :dayOfWeek ORDER BY s.startTime")
+        List<Schedule> findDailyScheduleByClassGroup(@Param("classGroupId") Long classGroupId, @Param("dayOfWeek") DayOfWeek dayOfWeek);
+
         @Query("SELECT s FROM Schedule s WHERE s.teacher.id = :teacherId ORDER BY s.dayOfWeek, s.startTime")
         List<Schedule> findWeeklyScheduleByTeacher(@Param("teacherId") Long teacherId);
+
+        @Query("SELECT s FROM Schedule s WHERE s.teacher.id = :teacherId AND s.dayOfWeek = :dayOfWeek ORDER BY s.startTime")
+        List<Schedule> findDailyScheduleByTeacher(@Param("teacherId") Long teacherId, @Param("dayOfWeek") DayOfWeek dayOfWeek);
 
         @Query("SELECT s FROM Schedule s WHERE s.teacher.id = :teacherId AND s.dayOfWeek = :dayOfWeek " +
                         "AND ((s.startTime <= :startTime AND s.endTime > :startTime) OR " +

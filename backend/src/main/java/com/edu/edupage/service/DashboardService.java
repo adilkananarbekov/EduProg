@@ -40,10 +40,7 @@ public class DashboardService {
 
         // Today's schedule
         DayOfWeek today = LocalDate.now().getDayOfWeek();
-        List<ScheduleDTO> todaySchedule = scheduleService.getWeeklyScheduleForClass(classGroupId)
-                .stream()
-                .filter(s -> s.getDayOfWeek().equals(today.toString()))
-                .collect(Collectors.toList());
+        List<ScheduleDTO> todaySchedule = scheduleService.getDailyScheduleForClass(classGroupId, today);
 
         // Upcoming homework
         List<HomeworkDTO> upcomingHomework = homeworkService.getPendingHomeworkForClass(classGroupId, studentId);
@@ -106,10 +103,7 @@ public class DashboardService {
 
         // Today's schedule
         DayOfWeek today = LocalDate.now().getDayOfWeek();
-        List<ScheduleDTO> todaySchedule = scheduleService.getWeeklyScheduleForTeacher(teacherId)
-                .stream()
-                .filter(s -> s.getDayOfWeek().equals(today.toString()))
-                .collect(Collectors.toList());
+        List<ScheduleDTO> todaySchedule = scheduleService.getDailyScheduleForTeacher(teacherId, today);
 
         // Classes info
         List<Schedule> teacherSchedules = scheduleRepository.findByTeacherId(teacherId);
