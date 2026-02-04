@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -75,13 +76,21 @@ public class AuthService {
                     .build();
 
             if (request.getSubjectIds() != null && !request.getSubjectIds().isEmpty()) {
-                Set<Subject> subjects = new HashSet<>();
-                for (Long subjectId : request.getSubjectIds()) {
-                    Subject subject = subjectRepository.findById(subjectId)
-                            .orElseThrow(() -> new ResourceNotFoundException("Subject", "id", subjectId));
-                    subjects.add(subject);
+                Set<Long> subjectIds = new HashSet<>(request.getSubjectIds());
+                List<Subject> subjects = subjectRepository.findAllById(subjectIds);
+
+                if (subjects.size() != subjectIds.size()) {
+                    Set<Long> foundIds = new HashSet<>();
+                    for (Subject subject : subjects) {
+                        foundIds.add(subject.getId());
+                    }
+                    for (Long subjectId : subjectIds) {
+                        if (!foundIds.contains(subjectId)) {
+                            throw new ResourceNotFoundException("Subject", "id", subjectId);
+                        }
+                    }
                 }
-                teacher.setSubjects(subjects);
+                teacher.setSubjects(new HashSet<>(subjects));
             }
 
             teacherRepository.save(teacher);
