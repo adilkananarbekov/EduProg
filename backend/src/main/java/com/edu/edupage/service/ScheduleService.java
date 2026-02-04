@@ -32,6 +32,20 @@ public class ScheduleService {
                 .collect(Collectors.toList());
     }
 
+    public List<ScheduleDTO> getDailyScheduleForClass(Long classGroupId, DayOfWeek dayOfWeek) {
+        return scheduleRepository.findDailyScheduleByClassGroup(classGroupId, dayOfWeek)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ScheduleDTO> getDailyScheduleForTeacher(Long teacherId, DayOfWeek dayOfWeek) {
+        return scheduleRepository.findDailyScheduleByTeacher(teacherId, dayOfWeek)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
     public List<ScheduleDTO> getWeeklyScheduleForTeacher(Long teacherId) {
         return scheduleRepository.findWeeklyScheduleByTeacher(teacherId)
                 .stream()
