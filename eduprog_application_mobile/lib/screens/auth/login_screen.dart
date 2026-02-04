@@ -242,15 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          // TODO: Navigate to forgot password
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Please contact administrator to reset your password',
-                              ),
-                              backgroundColor: AppColors.deepNavy,
-                            ),
-                          );
+                          context.push('/forgot-password');
                         },
                         child: const Text(
                           'Forgot Password?',
