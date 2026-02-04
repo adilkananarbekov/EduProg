@@ -8,6 +8,7 @@ import '../../providers/auth_provider.dart';
 import '../../models/user.dart';
 import '../../screens/auth/splash_screen.dart';
 import '../../screens/auth/login_screen.dart';
+import '../../screens/auth/forgot_password_screen.dart';
 import '../../screens/student/student_home_screen.dart';
 import '../../screens/student/schedule_screen.dart';
 import '../../screens/student/grades_screen.dart';
@@ -37,6 +38,10 @@ class AppRouter {
         GoRoute(
           path: '/login',
           builder: (context, state) => const LoginScreen(),
+        ),
+        GoRoute(
+          path: '/forgot-password',
+          builder: (context, state) => const ForgotPasswordScreen(),
         ),
 
         // Student routes with shell

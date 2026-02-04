@@ -93,12 +93,18 @@ public class AdminController {
                 }
 
                 final ClassGroup finalClassGroup = classGroup;
-                List<Student> students = request.studentIds().stream()
-                                .map(id -> studentRepository.findById(id)
-                                                .orElseThrow(() -> new ResourceNotFoundException("Student", "id", id)))
-                                .peek(s -> s.setClassGroup(finalClassGroup))
-                                .map(studentRepository::save)
-                                .collect(Collectors.toList());
+                List<Student> students = studentRepository.findAllById(request.studentIds());
+                if (students.size() != request.studentIds().size()) {
+                        Set<Long> foundIds = students.stream().map(Student::getId).collect(Collectors.toSet());
+                        for (Long id : request.studentIds()) {
+                                if (!foundIds.contains(id)) {
+                                        throw new ResourceNotFoundException("Student", "id", id);
+                                }
+                        }
+                }
+
+                students.forEach(s -> s.setClassGroup(finalClassGroup));
+                students = studentRepository.saveAll(students);
 
                 return ResponseEntity.ok(students.stream().map(this::mapToStudentDTO).collect(Collectors.toList()));
         }
@@ -119,12 +125,19 @@ public class AdminController {
                 Teacher teacher = teacherRepository.findById(teacherId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Teacher", "id", teacherId));
 
-                Set<Subject> subjects = request.subjectIds().stream()
-                                .map(id -> subjectRepository.findById(id)
-                                                .orElseThrow(() -> new ResourceNotFoundException("Subject", "id", id)))
-                                .collect(Collectors.toSet());
+                Set<Long> subjectIds = new java.util.HashSet<>(request.subjectIds());
+                List<Subject> subjects = subjectRepository.findAllById(subjectIds);
 
-                teacher.setSubjects(subjects);
+                if (subjects.size() != subjectIds.size()) {
+                        Set<Long> foundIds = subjects.stream().map(Subject::getId).collect(Collectors.toSet());
+                        for (Long id : subjectIds) {
+                                if (!foundIds.contains(id)) {
+                                        throw new ResourceNotFoundException("Subject", "id", id);
+                                }
+                        }
+                }
+
+                teacher.setSubjects(new java.util.HashSet<>(subjects));
                 teacher = teacherRepository.save(teacher);
                 return ResponseEntity.ok(mapToTeacherDTO(teacher));
         }
