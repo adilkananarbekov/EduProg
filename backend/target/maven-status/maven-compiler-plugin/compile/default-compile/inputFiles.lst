@@ -1,6 +1,9 @@
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\AnnouncementController.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Schedule.java
+<<<<<<< HEAD
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\repository\ClassroomRepository.java
+=======
+>>>>>>> parent of 7b735bd (Optimize teacher registration N+1 query)
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\repository\TeacherRepository.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\LibraryService.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\LoanStatus.java
@@ -15,22 +18,34 @@ C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\repository\MessageRepository.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\EdupageApplication.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\ProfileService.java
+<<<<<<< HEAD
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\AdditionalCourseDTO.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Announcement.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Teacher.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\ScheduleService.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\TeacherController.java
+=======
+C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Announcement.java
+C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Teacher.java
+C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\ScheduleService.java
+>>>>>>> parent of 7b735bd (Optimize teacher registration N+1 query)
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\HomeworkController.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\User.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\CreateAnnouncementRequest.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\CreateEventRequest.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\ExamService.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\GradeDTO.java
+<<<<<<< HEAD
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Classroom.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\AuthService.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\AuthController.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\ProfileDTO.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\AdditionalCourse.java
+=======
+C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\AuthService.java
+C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\AuthController.java
+C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\ProfileDTO.java
+>>>>>>> parent of 7b735bd (Optimize teacher registration N+1 query)
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\LibraryBook.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\CreateScheduleRequest.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\repository\EventRepository.java
@@ -44,12 +59,18 @@ C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Role.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\MessageController.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\GradeSubmissionRequest.java
+<<<<<<< HEAD
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\ClassroomController.java
+=======
+>>>>>>> parent of 7b735bd (Optimize teacher registration N+1 query)
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\GradeService.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\SubmissionStatus.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Attendance.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\FeeController.java
+<<<<<<< HEAD
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\TeacherService.java
+=======
+>>>>>>> parent of 7b735bd (Optimize teacher registration N+1 query)
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\ExamType.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\EventService.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Event.java
@@ -66,13 +87,19 @@ C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\HomeworkService.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\CreateExamRequest.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\exception\GlobalExceptionHandler.java
+<<<<<<< HEAD
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\AdditionalCourseService.java
+=======
+>>>>>>> parent of 7b735bd (Optimize teacher registration N+1 query)
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\AttendanceController.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\BookCategory.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\LibraryController.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\repository\AnnouncementRepository.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\LibraryBookDTO.java
+<<<<<<< HEAD
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\repository\AdditionalCourseRepository.java
+=======
+>>>>>>> parent of 7b735bd (Optimize teacher registration N+1 query)
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\service\DashboardService.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\CreateGradeRequest.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\repository\HomeworkRepository.java
@@ -82,22 +109,34 @@ C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\MarkAttendanceRequest.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\FeeDTO.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\AuthResponse.java
+<<<<<<< HEAD
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\repository\ParentRepository.java
+=======
+>>>>>>> parent of 7b735bd (Optimize teacher registration N+1 query)
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\SubmitHomeworkRequest.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\MessageDTO.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\NotificationDTO.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\EventDTO.java
+<<<<<<< HEAD
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\AdditionalCourseController.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\ClassGroupController.java
+=======
+>>>>>>> parent of 7b735bd (Optimize teacher registration N+1 query)
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\controller\AdminController.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\ExamDTO.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Subject.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\repository\SubmissionRepository.java
+<<<<<<< HEAD
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Parent.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\AttendanceDTO.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\CreateHomeworkRequest.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\NotificationType.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\SubjectDTO.java
+=======
+C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\AttendanceDTO.java
+C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\CreateHomeworkRequest.java
+C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\NotificationType.java
+>>>>>>> parent of 7b735bd (Optimize teacher registration N+1 query)
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\ScheduleDTO.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\LoginRequest.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\Fee.java
@@ -119,7 +158,10 @@ C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\UpdateProfileRequest.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\SubmissionDTO.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\StudentDashboardDTO.java
+<<<<<<< HEAD
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\dto\TeacherDTO.java
+=======
+>>>>>>> parent of 7b735bd (Optimize teacher registration N+1 query)
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\BookLoan.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\repository\FeeRepository.java
 C:\Users\Adilkan\Documents\EdupageProject\backend\src\main\java\com\edu\edupage\entity\HomeworkType.java
