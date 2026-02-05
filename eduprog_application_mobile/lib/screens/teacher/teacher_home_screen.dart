@@ -20,28 +20,19 @@ class TeacherHomeScreen extends StatefulWidget {
 
 class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
   late ScheduleService _scheduleService;
-
-  List<Schedule> _todayClasses = [];
-  bool _isLoading = true;
+  Stream<List<Schedule>>? _scheduleStream;
 
   @override
   void initState() {
     super.initState();
     _scheduleService = ScheduleService(ApiClient());
-    _loadData();
+    _scheduleStream = _scheduleService.getTodayScheduleStream();
   }
 
-  Future<void> _loadData() async {
-    setState(() => _isLoading = true);
-    try {
-      final schedule = await _scheduleService.getTodaySchedule();
-      setState(() {
-        _todayClasses = schedule;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() => _isLoading = false);
-    }
+  Future<void> _refresh() async {
+    setState(() {
+      _scheduleStream = _scheduleService.getTodayScheduleStream();
+    });
   }
 
   @override
@@ -51,7 +42,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.softGray,
       body: RefreshIndicator(
-        onRefresh: _loadData,
+        onRefresh: _refresh,
         color: AppColors.deepNavy,
         child: CustomScrollView(
           slivers: [
@@ -249,47 +240,57 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
   }
 
   Widget _buildTodayClasses() {
-    if (_isLoading) {
-      return Container(
-        height: 100,
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: const Center(
-          child: CircularProgressIndicator(color: AppColors.deepNavy),
-        ),
-      );
-    }
-
-    if (_todayClasses.isEmpty) {
-      return Container(
-        padding: const EdgeInsets.all(32),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              Icons.event_available,
-              size: 48,
-              color: AppColors.mediumGray.withValues(alpha: 0.5),
+    return StreamBuilder<List<Schedule>>(
+      stream: _scheduleStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData && snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            height: 100,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(16),
             ),
-            const SizedBox(height: 12),
-            const Text(
-              'No classes scheduled for today',
-              style: TextStyle(color: AppColors.mediumGray),
+            child: const Center(
+              child: CircularProgressIndicator(color: AppColors.deepNavy),
             ),
-          ],
-        ),
-      );
-    }
+          );
+        }
 
-    return Column(
-      children: _todayClasses
-          .map((schedule) => _buildClassCard(schedule))
-          .toList(),
+        final todayClasses = snapshot.data ?? [];
+
+        if (todayClasses.isEmpty) {
+           // Only show "No classes" if we are not waiting for data (or if waiting but empty cache is acceptable)
+           // If cache is empty, we show this.
+           // If network returns data later, it updates.
+           return Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.event_available,
+                  size: 48,
+                  color: AppColors.mediumGray.withValues(alpha: 0.5),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'No classes scheduled for today',
+                  style: TextStyle(color: AppColors.mediumGray),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return Column(
+          children: todayClasses
+              .map((schedule) => _buildClassCard(schedule))
+              .toList(),
+        );
+      }
     );
   }
 

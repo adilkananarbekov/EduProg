@@ -8,9 +8,13 @@ import 'app.dart';
 import 'core/network/api_client.dart';
 import 'providers/auth_provider.dart';
 import 'services/auth_service.dart';
+import 'data/local/local_database_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Local Database
+  await LocalDatabaseService().init();
 
   // Set system UI overlay style
   SystemChrome.setSystemUIOverlayStyle(

@@ -6,13 +6,15 @@ import '../core/constants/api_constants.dart';
 import '../core/network/api_client.dart';
 import '../core/network/api_exceptions.dart';
 import '../models/grade.dart';
+import '../data/repositories/base_repository.dart';
+import '../data/local/local_database_service.dart';
 
-class GradeService {
+class GradeService extends BaseRepository<Grade> {
   final ApiClient _apiClient;
 
   GradeService(this._apiClient);
 
-  Future<List<Grade>> getGrades() async {
+  Future<List<Grade>> _fetchGrades() async {
     try {
       final response = await _apiClient.get(ApiConstants.grades);
       final List<dynamic> data = response.data as List<dynamic>;
@@ -24,18 +26,44 @@ class GradeService {
     }
   }
 
-  Future<List<SubjectGrades>> getGradesBySubject() async {
-    final grades = await getGrades();
+  Stream<List<Grade>> getGradesStream() {
+    return getListStream(
+      boxName: LocalDatabaseService.gradesBox,
+      key: 'all_grades',
+      apiCall: _fetchGrades,
+    );
+  }
 
-    // Group by subject
-    final Map<String, List<Grade>> grouped = {};
-    for (final grade in grades) {
-      grouped.putIfAbsent(grade.subjectName, () => []).add(grade);
+  Stream<List<SubjectGrades>> getGradesBySubjectStream() {
+    return getGradesStream().map((grades) {
+      final Map<String, List<Grade>> grouped = {};
+      for (final grade in grades) {
+        grouped.putIfAbsent(grade.subjectName, () => []).add(grade);
+      }
+      return grouped.entries
+          .map((e) => SubjectGrades(subjectName: e.key, grades: e.value))
+          .toList();
+    });
+  }
+
+  Future<List<Grade>> getGrades() async {
+    try {
+      final stream = getGradesStream();
+      if (await stream.isEmpty) return [];
+      return await stream.last;
+    } catch (e) {
+      return [];
     }
+  }
 
-    return grouped.entries
-        .map((e) => SubjectGrades(subjectName: e.key, grades: e.value))
-        .toList();
+  Future<List<SubjectGrades>> getGradesBySubject() async {
+    try {
+      final stream = getGradesBySubjectStream();
+      if (await stream.isEmpty) return [];
+      return await stream.last;
+    } catch (e) {
+      return [];
+    }
   }
 
   Future<double> getOverallAverage() async {
