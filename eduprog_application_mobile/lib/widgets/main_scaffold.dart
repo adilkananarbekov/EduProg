@@ -95,6 +95,25 @@ class MainScaffold extends StatelessWidget {
             label: 'Profile',
           ),
         ];
+      case UserRole.operator:
+        return const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_rounded),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today_rounded),
+            label: 'Schedule',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.grade_rounded),
+            label: 'Grades',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_rounded),
+            label: 'Profile',
+          ),
+        ];
       case UserRole.admin:
         return const [
           BottomNavigationBarItem(
@@ -131,6 +150,12 @@ class MainScaffold extends StatelessWidget {
         if (currentPath == '/grades') return 2;
         if (currentPath == '/profile') return 3;
         return 0;
+      case UserRole.operator:
+        if (currentPath == '/teacher') return 0;
+        if (currentPath == '/schedule') return 1;
+        if (currentPath == '/grades') return 2;
+        if (currentPath == '/profile') return 3;
+        return 0;
       case UserRole.admin:
         if (currentPath == '/admin') return 0;
         if (currentPath.startsWith('/admin/users')) return 1;
@@ -147,6 +172,10 @@ class MainScaffold extends StatelessWidget {
         context.go(routes[index]);
         break;
       case UserRole.teacher:
+        final routes = ['/teacher', '/schedule', '/grades', '/profile'];
+        context.go(routes[index]);
+        break;
+      case UserRole.operator:
         final routes = ['/teacher', '/schedule', '/grades', '/profile'];
         context.go(routes[index]);
         break;

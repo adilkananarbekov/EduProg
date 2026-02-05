@@ -267,8 +267,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Error Message
                     Consumer<AuthProvider>(
                       builder: (context, auth, _) {
-                        if (auth.errorMessage == null)
+                        if (auth.errorMessage == null) {
                           return const SizedBox.shrink();
+                        }
                         return Container(
                           padding: const EdgeInsets.all(12),
                           margin: const EdgeInsets.only(bottom: 16),

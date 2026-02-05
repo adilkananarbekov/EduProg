@@ -20,7 +20,7 @@ class _GradesScreenState extends State<GradesScreen> {
   List<SubjectGrades> _subjectGrades = [];
   double _overallAverage = 0;
   bool _isLoading = true;
-  Set<String> _expandedSubjects = {};
+  final Set<String> _expandedSubjects = {};
 
   @override
   void initState() {
@@ -294,7 +294,7 @@ class _GradesScreenState extends State<GradesScreen> {
               physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.symmetric(vertical: 8),
               itemCount: subject.grades.length,
-              separatorBuilder: (_, __) =>
+              separatorBuilder: (context, _) =>
                   const Divider(height: 1, indent: 16, endIndent: 16),
               itemBuilder: (context, index) {
                 final grade = subject.grades[index];

@@ -52,6 +52,6 @@ class NotFoundException extends ApiException {
 class ValidationException extends ApiException {
   final Map<String, List<String>>? errors;
 
-  ValidationException({String message = 'Validation failed', this.errors})
-    : super(message: message, statusCode: 422);
+  ValidationException({super.message = 'Validation failed', this.errors})
+    : super(statusCode: 422);
 }

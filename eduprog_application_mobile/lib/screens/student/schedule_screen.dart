@@ -296,7 +296,7 @@ class _ScheduleScreenState extends State<ScheduleScreen>
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              'Room ${schedule.room}',
+                              schedule.room,
                               style: const TextStyle(
                                 fontSize: 13,
                                 color: AppColors.mediumGray,

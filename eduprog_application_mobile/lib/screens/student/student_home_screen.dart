@@ -12,6 +12,8 @@ import '../../services/announcement_service.dart';
 import '../../core/network/api_client.dart';
 import '../../models/schedule.dart';
 import '../../models/announcement.dart';
+import 'notifications_screen.dart';
+import 'teachers_list_screen.dart';
 
 class StudentHomeScreen extends StatefulWidget {
   const StudentHomeScreen({super.key});
@@ -121,7 +123,13 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                               Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            const NotificationsScreen(),
+                                      ),
+                                    ),
                                     icon: Stack(
                                       children: [
                                         const Icon(
@@ -207,6 +215,12 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                   _buildSectionHeader('Announcements'),
                   const SizedBox(height: 12),
                   _buildAnnouncements(),
+                  const SizedBox(height: 20),
+
+                  // Quick Actions
+                  _buildSectionHeader('Quick Actions'),
+                  const SizedBox(height: 12),
+                  _buildQuickActions(),
                   const SizedBox(height: 100),
                 ]),
               ),
@@ -346,7 +360,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: _todaySchedule.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
+        separatorBuilder: (context, index) => const Divider(height: 1),
         itemBuilder: (context, index) {
           final schedule = _todaySchedule[index];
           return ListTile(
@@ -528,6 +542,88 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildQuickActions() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.deepNavy.withValues(alpha: 0.06),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          _buildQuickActionItem(
+            icon: Icons.people_outline,
+            title: 'Teachers',
+            subtitle: 'View all teachers and their schedules',
+            color: AppColors.deepNavy,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const TeachersListScreen()),
+            ),
+          ),
+          const Divider(height: 1),
+          _buildQuickActionItem(
+            icon: Icons.notifications_outlined,
+            title: 'Notifications',
+            subtitle: 'Check your messages and updates',
+            color: AppColors.accentRed,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+            ),
+          ),
+          const Divider(height: 1),
+          _buildQuickActionItem(
+            icon: Icons.calendar_month_outlined,
+            title: 'Full Schedule',
+            subtitle: 'View your complete weekly schedule',
+            color: AppColors.successGreen,
+            onTap: () => context.go('/schedule'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickActionItem({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      leading: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: color, size: 24),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          color: AppColors.deepNavy,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: const TextStyle(fontSize: 12, color: AppColors.mediumGray),
+      ),
+      trailing: Icon(Icons.chevron_right, color: AppColors.mediumGray),
+      onTap: onTap,
     );
   }
 }

@@ -49,6 +49,14 @@ class ApiConstants {
   static const String schedule = '/api/schedule';
   static const String scheduleWeek = '/api/schedule/week';
   static const String scheduleGenerate = '/api/schedule/generate';
+  static const String scheduleByClass = '/api/schedule/class';
+  static const String scheduleByTeacher = '/api/schedule/teacher';
+  static const String scheduleByClassroom = '/api/schedule/classroom';
+
+  // Common/Public List Endpoints
+  static const String commonTeachers = '/api/teachers';
+  static const String commonClasses = '/api/classes';
+  static const String commonClassrooms = '/api/admin/classrooms';
 
   // Grades Endpoints
   static const String grades = '/api/grades';
@@ -80,6 +88,8 @@ class ApiConstants {
   static const String adminTeachers = '/api/admin/teachers';
   static const String adminClasses = '/api/admin/classes';
   static const String adminSubjects = '/api/admin/subjects';
+  static const String adminParents = '/api/admin/parents';
+  static const String adminSimulation = '/api/admin/simulation/schedule';
 
   // Timeouts
   static const Duration connectTimeout = Duration(seconds: 30);

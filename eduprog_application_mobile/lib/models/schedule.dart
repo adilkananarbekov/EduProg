@@ -4,22 +4,26 @@ library;
 class Schedule {
   final int id;
   final String subjectName;
+  final String? subjectShortName; // Short name for compact UI (e.g., "Math")
   final String teacherName;
   final String className;
   final String room;
   final int dayOfWeek; // 1 = Monday, 7 = Sunday
   final String startTime;
   final String endTime;
+  final int lessonNumber;
 
   Schedule({
     required this.id,
     required this.subjectName,
+    this.subjectShortName,
     required this.teacherName,
     required this.className,
     required this.room,
     required this.dayOfWeek,
     required this.startTime,
     required this.endTime,
+    required this.lessonNumber,
   });
 
   factory Schedule.fromJson(Map<String, dynamic> json) {
@@ -29,16 +33,56 @@ class Schedule {
           json['subjectName'] as String? ??
           json['subject']?['name'] as String? ??
           '',
+      subjectShortName: json['subjectShortName'] as String?,
       teacherName: json['teacherName'] as String? ?? '',
       className:
           json['className'] as String? ??
           json['classGroup']?['name'] as String? ??
           '',
       room: json['room'] as String? ?? '',
-      dayOfWeek: json['dayOfWeek'] as int? ?? 1,
+      dayOfWeek: _parseDayOfWeek(json['dayOfWeek']),
       startTime: json['startTime'] as String? ?? '',
       endTime: json['endTime'] as String? ?? '',
+      lessonNumber: json['lessonNumber'] as int? ?? 0,
     );
+  }
+
+  static int _parseDayOfWeek(dynamic value) {
+    if (value is int) return value;
+    if (value is String) {
+      switch (value.toUpperCase()) {
+        case 'MONDAY':
+          return 1;
+        case 'TUESDAY':
+          return 2;
+        case 'WEDNESDAY':
+          return 3;
+        case 'THURSDAY':
+          return 4;
+        case 'FRIDAY':
+          return 5;
+        case 'SATURDAY':
+          return 6;
+        case 'SUNDAY':
+          return 7;
+      }
+    }
+    return 1; // Default to Monday
+  }
+
+  // Alias for compatibility
+  String get classGroupName => className;
+
+  /// Display name for UI - uses shortName if available, otherwise first 4 chars
+  String get displaySubjectName {
+    if (subjectShortName != null && subjectShortName!.isNotEmpty) {
+      return subjectShortName!;
+    }
+    // Fallback: use first 4 characters if no short name
+    if (subjectName.length <= 4) {
+      return subjectName;
+    }
+    return subjectName.substring(0, 4);
   }
 
   String get dayName {

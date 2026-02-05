@@ -17,7 +17,10 @@ import '../../screens/admin/admin_home_screen.dart';
 import '../../screens/admin/admin_users_screen.dart';
 import '../../screens/admin/admin_announcements_screen.dart';
 import '../../screens/admin/admin_classes_screen.dart';
+import '../../screens/admin/admin_classrooms_screen.dart';
+import '../../screens/admin/admin_parents_screen.dart';
 import '../../screens/profile/profile_screen.dart';
+import '../../screens/common/universal_schedule_screen.dart';
 import '../../widgets/main_scaffold.dart';
 
 class AppRouter {
@@ -82,28 +85,28 @@ class AppRouter {
               builder: (context, state) => const AdminAnnouncementsScreen(),
             ),
             GoRoute(
+              path: '/admin/classrooms',
+              builder: (context, state) => const AdminClassroomsScreen(),
+            ),
+            GoRoute(
               path: '/admin/classes',
               builder: (context, state) => const AdminClassesScreen(),
+            ),
+            GoRoute(
+              path: '/admin/parents',
+              builder: (context, state) => const AdminParentsScreen(),
             ),
             GoRoute(
               path: '/profile',
               builder: (context, state) => const ProfileScreen(),
             ),
+            GoRoute(
+              path: '/schedule-viewer',
+              builder: (context, state) => const UniversalScheduleScreen(),
+            ),
           ],
         ),
       ],
     );
-  }
-
-  static String _getHomeRoute(UserRole? role) {
-    switch (role) {
-      case UserRole.admin:
-        return '/admin';
-      case UserRole.teacher:
-        return '/teacher';
-      case UserRole.student:
-      default:
-        return '/student';
-    }
   }
 }

@@ -1,0 +1,14 @@
+Analyzing eduprog_application_mobile...                         
+
+   info - Parameter 'message' could be a super parameter - lib\core\network\api_exceptions.dart:55:3 - use_super_parameters
+   info - Unnecessary use of multiple underscores - lib\screens\admin\admin_classes_screen.dart:343:41 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\screens\admin\admin_home_screen.dart:460:31 - unnecessary_underscores
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\screens\admin\admin_home_screen.dart:525:40 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\screens\admin\admin_home_screen.dart:535:40 - use_build_context_synchronously
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\screens\admin\admin_users_screen.dart:481:17 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\screens\admin\admin_users_screen.dart:482:17 - deprecated_member_use
+   info - Statements in an if should be enclosed in a block - lib\screens\auth\login_screen.dart:271:27 - curly_braces_in_flow_control_structures
+   info - The private field _expandedSubjects could be 'final' - lib\screens\student\grades_screen.dart:23:15 - prefer_final_fields
+   info - Unnecessary use of multiple underscores - lib\screens\student\grades_screen.dart:297:37 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\screens\student\student_home_screen.dart:363:31 - unnecessary_underscores
+

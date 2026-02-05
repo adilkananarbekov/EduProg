@@ -1,7 +1,7 @@
 /// EduOps - User Model
 library;
 
-enum UserRole { student, teacher, admin }
+enum UserRole { student, teacher, admin, operator }
 
 class User {
   final int id;
@@ -51,6 +51,8 @@ class User {
         return UserRole.admin;
       case 'TEACHER':
         return UserRole.teacher;
+      case 'OPERATOR':
+        return UserRole.operator;
       case 'STUDENT':
       default:
         return UserRole.student;

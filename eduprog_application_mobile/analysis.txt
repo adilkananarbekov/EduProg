@@ -1,0 +1,27 @@
+Analyzing eduprog_application_mobile...                         
+
+   info - Parameter 'message' could be a super parameter - lib\core\network\api_exceptions.dart:55:3 - use_super_parameters
+warning - The declaration '_getHomeRoute' isn't referenced - lib\core\router\app_router.dart:103:17 - unused_element
+   info - Unnecessary use of multiple underscores - lib\screens\admin\admin_classes_screen.dart:343:41 - unnecessary_underscores
+  error - The getter 'deepOrange' isn't defined for the type 'AppColors' - lib\screens\admin\admin_home_screen.dart:330:28 - undefined_getter
+   info - Unnecessary use of multiple underscores - lib\screens\admin\admin_home_screen.dart:451:31 - unnecessary_underscores
+  error - Undefined name 'context' - lib\screens\admin\admin_home_screen.dart:491:16 - undefined_identifier
+  error - The function 'setState' isn't defined - lib\screens\admin\admin_home_screen.dart:504:15 - undefined_function
+  error - Undefined name '_isLoading' - lib\screens\admin\admin_home_screen.dart:504:30 - undefined_identifier
+  error - Undefined name '_adminService' - lib\screens\admin\admin_home_screen.dart:507:23 - undefined_identifier
+  error - Undefined name 'mounted' - lib\screens\admin\admin_home_screen.dart:514:21 - undefined_identifier
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\screens\admin\admin_home_screen.dart:515:40 - use_build_context_synchronously
+  error - Undefined name 'mounted' - lib\screens\admin\admin_home_screen.dart:520:21 - undefined_identifier
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\screens\admin\admin_home_screen.dart:521:40 - use_build_context_synchronously
+  error - Undefined name 'mounted' - lib\screens\admin\admin_home_screen.dart:526:21 - undefined_identifier
+  error - The function 'setState' isn't defined - lib\screens\admin\admin_home_screen.dart:527:19 - undefined_function
+  error - Undefined name '_isLoading' - lib\screens\admin\admin_home_screen.dart:527:34 - undefined_identifier
+  error - Expected a method, getter, setter or operator declaration - lib\screens\admin\admin_home_screen.dart:537:1 - expected_executable
+  error - The named parameter 'onTap' isn't defined - lib\screens\admin\admin_users_screen.dart:285:27 - undefined_named_parameter
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\screens\admin\admin_users_screen.dart:481:17 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\screens\admin\admin_users_screen.dart:482:17 - deprecated_member_use
+   info - Statements in an if should be enclosed in a block - lib\screens\auth\login_screen.dart:271:27 - curly_braces_in_flow_control_structures
+   info - The private field _expandedSubjects could be 'final' - lib\screens\student\grades_screen.dart:23:15 - prefer_final_fields
+   info - Unnecessary use of multiple underscores - lib\screens\student\grades_screen.dart:297:37 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\screens\student\student_home_screen.dart:363:31 - unnecessary_underscores
+

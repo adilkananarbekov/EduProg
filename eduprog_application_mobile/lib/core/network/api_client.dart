@@ -13,7 +13,11 @@ class ApiClient {
   static const String _tokenKey = 'auth_token';
   static const String _refreshTokenKey = 'refresh_token';
 
-  ApiClient() {
+  static final ApiClient _instance = ApiClient._internal();
+
+  factory ApiClient() => _instance;
+
+  ApiClient._internal() {
     final baseUrl = ApiConstants.baseUrl;
     debugPrint('ApiClient: Connecting to $baseUrl');
 

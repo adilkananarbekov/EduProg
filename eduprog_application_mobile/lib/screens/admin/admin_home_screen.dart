@@ -102,7 +102,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                               ],
                             ),
                             GestureDetector(
-                              onTap: () => context.go('/profile'),
+                              onTap: () => context.push('/profile'),
                               child: CircleAvatar(
                                 radius: 22,
                                 backgroundColor: AppColors.white,
@@ -182,6 +182,43 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 ),
                 const SizedBox(height: 12),
                 _buildQuickActions(),
+                const SizedBox(height: 24),
+
+                // Simulation Section
+                const Text(
+                  'Tools',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.deepNavy,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: ListTile(
+                    leading: const Icon(
+                      Icons.settings_suggest,
+                      color: AppColors.primaryBlue,
+                      size: 32,
+                    ),
+                    title: const Text(
+                      'Schedule Simulation',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: const Text(
+                      'Auto-generate class schedules based on subject requirements',
+                    ),
+                    trailing: ElevatedButton(
+                      onPressed: _showSimulationDialog,
+                      child: const Text('Run'),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 24),
 
                 // Recent Activity
@@ -297,16 +334,28 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         'route': '/admin/announcements',
       },
       {
+        'icon': Icons.family_restroom,
+        'label': 'Parents',
+        'color': Colors.deepOrange, // Assuming safe to use or define similar
+        'route': '/admin/parents',
+      },
+      {
         'icon': Icons.class_outlined,
-        'label': 'Manage Classes',
+        'label': 'Classrooms',
         'color': AppColors.deepNavy,
-        'route': '/admin/classes',
+        'route': '/admin/classrooms',
       },
       {
         'icon': Icons.analytics_outlined,
         'label': 'View Reports',
         'color': AppColors.warningAmber,
         'route': '/admin/reports',
+      },
+      {
+        'icon': Icons.calendar_view_week_outlined,
+        'label': 'Schedules',
+        'color': AppColors.primaryBlue,
+        'route': '/schedule-viewer',
       },
     ];
 
@@ -319,8 +368,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
               // Navigate to the route if it exists, otherwise show snackbar
               if (route == '/admin/users' ||
                   route == '/admin/announcements' ||
-                  route == '/admin/classes') {
-                context.go(route);
+                  route == '/admin/parents' ||
+                  route == '/admin/classrooms') {
+                context.push(route);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -413,7 +463,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: activities.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
+        separatorBuilder: (context, index) => const Divider(height: 1),
         itemBuilder: (context, index) {
           final activity = activities[index];
           return ListTile(
@@ -446,6 +496,61 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _showSimulationDialog() {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Run Schedule Simulation'),
+        content: const Text(
+          'This will attempt to generate a weekly schedule for all classes based on assigned teachers and subjects. Existing schedules might be affected.\n\nProceed?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(dialogContext);
+              setState(() => _isLoading = true);
+              try {
+                // Sending basic request - backend uses defaults
+                await _adminService.simulateSchedule({
+                  'lessonDurationMinutes': 45,
+                  'breakDurationMinutes': 10,
+                  'dayStartTime': '08:00',
+                  'dayEndTime': '15:00',
+                  'teacherSubjectMappings':
+                      [], // Should ideally be populated or backend handles default
+                });
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Schedule simulation completed successfully',
+                      ),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Simulation failed: $e')),
+                  );
+                }
+              } finally {
+                if (mounted) {
+                  setState(() => _isLoading = false);
+                }
+              }
+            },
+            child: const Text('Run Simulation'),
+          ),
+        ],
       ),
     );
   }

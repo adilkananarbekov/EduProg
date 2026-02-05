@@ -30,6 +30,9 @@ class AppColors {
   /// Dark Gray - Body text, descriptions
   static const Color darkGray = Color(0xFF3A3A3C);
 
+  /// Secondary Text Color (Alias for Medium Gray)
+  static const Color textSecondary = mediumGray;
+
   /// Success Green - Success states, present attendance
   static const Color successGreen = Color(0xFF34C759);
 

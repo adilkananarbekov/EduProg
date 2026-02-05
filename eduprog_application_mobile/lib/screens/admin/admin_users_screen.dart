@@ -3,8 +3,10 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/colors.dart';
 import '../../core/network/api_client.dart';
+import '../../providers/auth_provider.dart';
 import '../../services/admin_service.dart';
 
 class AdminUsersScreen extends StatefulWidget {
@@ -281,6 +283,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: ListTile(
+                            onTap: () => _showUserOptions(user),
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16,
                               vertical: 8,
@@ -334,6 +337,183 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                   ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showUserOptions(Map<String, dynamic> user) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Manage User: ${user['firstName']} ${user['lastName']}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.lock_reset, color: AppColors.deepNavy),
+              title: const Text('Change Password'),
+              onTap: () {
+                Navigator.pop(context);
+                _showChangePasswordDialog(user);
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.admin_panel_settings,
+                color: AppColors.deepNavy,
+              ),
+              title: const Text('Change Role'),
+              onTap: () {
+                Navigator.pop(context);
+                _showChangeRoleDialog(user);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showChangePasswordDialog(Map<String, dynamic> user) {
+    final newPasswordController = TextEditingController();
+    final adminPasswordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Change Password'),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: newPasswordController,
+                decoration: const InputDecoration(labelText: 'New Password'),
+                obscureText: true,
+                validator: (v) => v!.length < 6 ? 'Too short' : null,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Enter YOUR password specifically to verify',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              TextFormField(
+                controller: adminPasswordController,
+                decoration: const InputDecoration(labelText: 'Admin Password'),
+                obscureText: true,
+                validator: (v) => v!.isEmpty ? 'Required' : null,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                final adminUser = context.read<AuthProvider>().user;
+                if (adminUser == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Admin not found in session')),
+                  );
+                  return;
+                }
+
+                try {
+                  await _adminService.changeUserPassword(
+                    user['id'],
+                    newPasswordController.text,
+                    adminPasswordController.text,
+                    adminUser.id,
+                  );
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Password changed successfully'),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Failed: $e')));
+                  }
+                }
+              }
+            },
+            child: const Text('Change'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showChangeRoleDialog(Map<String, dynamic> user) {
+    String selectedRole = user['role'] ?? 'STUDENT';
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Change Role'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: ['STUDENT', 'TEACHER', 'ADMIN', 'PARENT'].map((role) {
+              return RadioListTile<String>(
+                title: Text(role),
+                value: role,
+                groupValue: selectedRole,
+                // ignore: deprecated_member_use
+                onChanged: (value) => setState(() => selectedRole = value!),
+              );
+            }).toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await _adminService.changeUserRole(user['id'], selectedRole);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    _loadUsers();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Role updated successfully'),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Failed: $e')));
+                  }
+                }
+              },
+              child: const Text('Update'),
+            ),
+          ],
+        ),
       ),
     );
   }
