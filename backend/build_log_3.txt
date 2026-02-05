@@ -1,0 +1,84 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.edu:edupage >---------------------------
+[INFO] Building edupage 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ edupage ---
+[INFO] Deleting C:\Users\Adilkan\Documents\EdupageProject\backend\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edupage ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ edupage ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 133 source files with javac [debug release 17] to target\classes
+[INFO] -------------------------------------------------------------
+[WARNING] COMPILATION WARNING : 
+[INFO] -------------------------------------------------------------
+[WARNING] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/dto/AuthResponse.java:[15,20] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[INFO] 1 warning
+[INFO] -------------------------------------------------------------
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[51,54] cannot find symbol
+  symbol:   method createClassrooms()
+  location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[67,42] cannot find symbol
+  symbol:   method createSubjects()
+  location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[70,48] cannot find symbol
+  symbol:   method createClassGroups()
+  location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[73,34] cannot find symbol
+  symbol:   method createAdmin()
+  location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[76,42] cannot find symbol
+  symbol:   method createTeachers(java.util.List<com.edu.edupage.entity.Subject>)
+  location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[79,42] cannot find symbol
+  symbol:   method createStudents(java.util.List<com.edu.edupage.entity.ClassGroup>)
+  location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[82,46] cannot find symbol
+  symbol:   method createClassrooms()
+  location: class com.edu.edupage.config.DataSeeder
+[INFO] 7 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.622 s
+[INFO] Finished at: 2026-02-05T23:51:17+06:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:compile (default-compile) on project edupage: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[51,54] cannot find symbol
+[ERROR]   symbol:   method createClassrooms()
+[ERROR]   location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[67,42] cannot find symbol
+[ERROR]   symbol:   method createSubjects()
+[ERROR]   location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[70,48] cannot find symbol
+[ERROR]   symbol:   method createClassGroups()
+[ERROR]   location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[73,34] cannot find symbol
+[ERROR]   symbol:   method createAdmin()
+[ERROR]   location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[76,42] cannot find symbol
+[ERROR]   symbol:   method createTeachers(java.util.List<com.edu.edupage.entity.Subject>)
+[ERROR]   location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[79,42] cannot find symbol
+[ERROR]   symbol:   method createStudents(java.util.List<com.edu.edupage.entity.ClassGroup>)
+[ERROR]   location: class com.edu.edupage.config.DataSeeder
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/config/DataSeeder.java:[82,46] cannot find symbol
+[ERROR]   symbol:   method createClassrooms()
+[ERROR]   location: class com.edu.edupage.config.DataSeeder
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

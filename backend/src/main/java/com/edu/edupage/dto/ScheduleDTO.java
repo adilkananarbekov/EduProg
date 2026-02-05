@@ -20,6 +20,7 @@ public class ScheduleDTO {
     private String teacherName;
     private Long subjectId;
     private String subjectName;
+    private String subjectShortName; // Short name for compact UI display
     private DayOfWeek dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;

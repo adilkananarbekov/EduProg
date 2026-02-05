@@ -33,14 +33,14 @@ public class ScheduleController {
             case STUDENT -> {
                 var student = studentRepository.findByUserId(user.getId())
                         .orElseThrow(() -> new IllegalStateException("Student profile not found"));
-                schedule = scheduleService.getWeeklyScheduleForClass(student.getClassGroup().getId());
+                schedule = scheduleService.getStudentSchedule(student);
             }
             case TEACHER -> {
                 var teacher = teacherRepository.findByUserId(user.getId())
                         .orElseThrow(() -> new IllegalStateException("Teacher profile not found"));
                 schedule = scheduleService.getWeeklyScheduleForTeacher(teacher.getId());
             }
-            case ADMIN -> schedule = scheduleService.getAllSchedules();
+            case ADMIN, OPERATOR -> schedule = scheduleService.getAllSchedules();
             default -> throw new IllegalStateException("Unknown role");
         }
 
@@ -53,25 +53,29 @@ public class ScheduleController {
     }
 
     @GetMapping("/teacher/{teacherId}")
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public ResponseEntity<List<ScheduleDTO>> getTeacherSchedule(@PathVariable Long teacherId) {
         return ResponseEntity.ok(scheduleService.getWeeklyScheduleForTeacher(teacherId));
     }
 
+    @GetMapping("/classroom/{classroomId}")
+    public ResponseEntity<List<ScheduleDTO>> getClassroomSchedule(@PathVariable Long classroomId) {
+        return ResponseEntity.ok(scheduleService.getWeeklyScheduleForClassroom(classroomId));
+    }
+
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'OPERATOR')")
     public ResponseEntity<ScheduleDTO> createSchedule(@Valid @RequestBody CreateScheduleRequest request) {
         return ResponseEntity.ok(scheduleService.createSchedule(request));
     }
 
     @PostMapping("/generate")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<List<ScheduleDTO>> generateSchedule(@Valid @RequestBody GenerateScheduleRequest request) {
         return ResponseEntity.ok(scheduleService.generateSchedule(request));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'OPERATOR')")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteSchedule(id);
         return ResponseEntity.noContent().build();

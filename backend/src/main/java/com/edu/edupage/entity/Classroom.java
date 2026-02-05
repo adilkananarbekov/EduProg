@@ -4,24 +4,25 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "subjects")
+@Table(name = "classrooms")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Subject {
+public class Classroom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    private String roomNumber; // e.g., "101", "205"
 
-    private String description;
-
-    private String shortName; // Short name for UI (e.g., "Math" for "Mathematics")
+    private String name; // e.g., "Biology Lab", "Computer Room"
 
     @Column(nullable = false)
-    private Integer hoursPerWeek;
+    private Integer floor; // 1, 2, etc.
+
+    @Builder.Default
+    private Integer capacity = 30;
 }

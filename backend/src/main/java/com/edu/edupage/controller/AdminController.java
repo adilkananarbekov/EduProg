@@ -3,6 +3,7 @@ package com.edu.edupage.controller;
 import com.edu.edupage.entity.*;
 import com.edu.edupage.exception.ResourceNotFoundException;
 import com.edu.edupage.repository.*;
+import com.edu.edupage.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +27,9 @@ public class AdminController {
         private final TeacherRepository teacherRepository;
         private final ClassGroupRepository classGroupRepository;
         private final SubjectRepository subjectRepository;
+        private final ParentRepository parentRepository;
+        private final ScheduleService scheduleService;
+        private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
         // ========== Users ==========
         @GetMapping("/users")
@@ -34,6 +38,33 @@ public class AdminController {
                                 userRepository.findAll().stream()
                                                 .map(this::mapToUserDTO)
                                                 .collect(Collectors.toList()));
+        }
+
+        @PutMapping("/users/{id}/password")
+        public ResponseEntity<Void> changeUserPassword(@PathVariable Long id,
+                        @RequestBody ChangePasswordRequest request) {
+                User user = userRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+                User admin = userRepository.findById(request.adminId())
+                                .orElseThrow(() -> new ResourceNotFoundException("User", "id", request.adminId()));
+
+                if (!passwordEncoder.matches(request.adminPassword(), admin.getPassword())) {
+                        throw new IllegalArgumentException("Invalid Admin Password");
+                }
+
+                user.setPassword(passwordEncoder.encode(request.newPassword()));
+                userRepository.save(user);
+                return ResponseEntity.noContent().build();
+        }
+
+        @PutMapping("/users/{id}/role")
+        public ResponseEntity<UserDTO> changeUserRole(@PathVariable Long id, @RequestBody ChangeRoleRequest request) {
+                User user = userRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+
+                user.setRole(request.role());
+                user = userRepository.save(user);
+                return ResponseEntity.ok(mapToUserDTO(user));
         }
 
         // ========== Students ==========
@@ -223,6 +254,45 @@ public class AdminController {
                 return ResponseEntity.noContent().build();
         }
 
+        // ========== Parents ==========
+        @GetMapping("/parents")
+        public ResponseEntity<List<ParentDTO>> getAllParents() {
+                return ResponseEntity.ok(
+                                parentRepository.findAll().stream()
+                                                .map(this::mapToParentDTO)
+                                                .collect(Collectors.toList()));
+        }
+
+        @GetMapping("/students/{id}/parents")
+        public ResponseEntity<List<ParentDTO>> getStudentParents(@PathVariable Long id) {
+                Student student = studentRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException("Student", "id", id));
+
+                return ResponseEntity.ok(
+                                student.getParents().stream()
+                                                .map(this::mapToParentDTO)
+                                                .collect(Collectors.toList()));
+        }
+
+        @PostMapping("/parents/{parentId}/students/{studentId}")
+        public ResponseEntity<Void> linkParentToStudent(@PathVariable Long parentId, @PathVariable Long studentId) {
+                Parent parent = parentRepository.findById(parentId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Parent", "id", parentId));
+                Student student = studentRepository.findById(studentId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Student", "id", studentId));
+
+                parent.getStudents().add(student);
+                parentRepository.save(parent);
+                return ResponseEntity.noContent().build();
+        }
+
+        // ========== Simulation ==========
+        @PostMapping("/simulation/schedule")
+        public ResponseEntity<List<com.edu.edupage.dto.ScheduleDTO>> simulateSchedule(
+                        @RequestBody com.edu.edupage.dto.GenerateScheduleRequest request) {
+                return ResponseEntity.ok(scheduleService.generateSchedule(request));
+        }
+
         // ========== Mappers ==========
         private UserDTO mapToUserDTO(User user) {
                 return new UserDTO(
@@ -271,6 +341,16 @@ public class AdminController {
                                 subject.getHoursPerWeek());
         }
 
+        private ParentDTO mapToParentDTO(Parent parent) {
+                return new ParentDTO(
+                                parent.getId(),
+                                parent.getUser().getId(),
+                                parent.getUser().getFullName(),
+                                parent.getUser().getEmail(),
+                                parent.getPhoneNumber(),
+                                parent.getStudents().stream().map(Student::getId).collect(Collectors.toList()));
+        }
+
         // ========== DTOs ==========
         public record UserDTO(Long id, String email, String firstName, String lastName, Role role) {
         }
@@ -304,5 +384,15 @@ public class AdminController {
         }
 
         public record UpdateTeacherSubjectsRequest(List<Long> subjectIds) {
+        }
+
+        public record ChangePasswordRequest(String newPassword, String adminPassword, Long adminId) {
+        }
+
+        public record ChangeRoleRequest(Role role) {
+        }
+
+        public record ParentDTO(Long id, Long userId, String name, String email, String phoneNumber,
+                        List<Long> studentIds) {
         }
 }

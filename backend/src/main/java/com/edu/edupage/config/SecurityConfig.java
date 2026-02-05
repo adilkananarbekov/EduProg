@@ -43,13 +43,23 @@ public class SecurityConfig {
                         // Public library book browsing (no auth required)
                         .requestMatchers(HttpMethod.GET, "/api/library/books/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/schedule/class/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/schedule/classroom/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/schedule/teacher/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/classes/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/teachers/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/admin/classrooms/**").permitAll()
                         // Shared endpoints for Teachers and Admins
-                        .requestMatchers("/api/admin/students/class/**").hasAnyRole("TEACHER", "ADMIN")
-                        .requestMatchers("/api/admin/class-groups").hasAnyRole("TEACHER", "ADMIN")
-                        .requestMatchers("/api/admin/subjects").hasAnyRole("TEACHER", "ADMIN")
+                        // Shared endpoints for Teachers and Admins
+                        .requestMatchers("/api/admin/students/class/**").hasAnyRole("TEACHER", "ADMIN", "OPERATOR")
+                        .requestMatchers("/api/admin/class-groups").hasAnyRole("TEACHER", "ADMIN", "OPERATOR")
+                        .requestMatchers("/api/admin/subjects").hasAnyRole("TEACHER", "ADMIN", "OPERATOR")
                         // Admin only endpoints
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/teacher/**").hasAnyRole("TEACHER", "ADMIN")
+                        .requestMatchers("/api/teacher/**").hasAnyRole("TEACHER", "ADMIN", "OPERATOR")
+                        // Schedule Management
+                        .requestMatchers(HttpMethod.POST, "/api/schedule/**").hasAnyRole("ADMIN", "TEACHER", "OPERATOR")
+                        .requestMatchers(HttpMethod.DELETE, "/api/schedule/**")
+                        .hasAnyRole("ADMIN", "TEACHER", "OPERATOR")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

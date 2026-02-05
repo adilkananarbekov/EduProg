@@ -15,7 +15,11 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000"));
+        // Allow specific origins including Flutter default, localhost ports, and local
+        // network IPs
+        configuration.setAllowedOriginPatterns(List.of("*")); // For development flexibility
+        // configuration.setAllowedOrigins(List.of("http://localhost:5173",
+        // "http://localhost:3000", "http://localhost:8081"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(List.of("Authorization"));

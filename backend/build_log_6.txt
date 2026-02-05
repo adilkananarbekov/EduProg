@@ -1,0 +1,48 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.edu:edupage >---------------------------
+[INFO] Building edupage 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ edupage ---
+[INFO] Deleting C:\Users\Adilkan\Documents\EdupageProject\backend\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edupage ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ edupage ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 133 source files with javac [debug release 17] to target\classes
+[INFO] Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+[INFO] -------------------------------------------------------------
+[WARNING] COMPILATION WARNING : 
+[INFO] -------------------------------------------------------------
+[WARNING] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/dto/AuthResponse.java:[15,20] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[INFO] 1 warning
+[INFO] -------------------------------------------------------------
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/service/ScheduleService.java:[60,74] incompatible types: bad type in conditional expression
+    int cannot be converted to java.time.DayOfWeek
+[INFO] 1 error
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  32.194 s
+[INFO] Finished at: 2026-02-06T00:45:35+06:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:compile (default-compile) on project edupage: Compilation failure
+[ERROR] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/service/ScheduleService.java:[60,74] incompatible types: bad type in conditional expression
+[ERROR]     int cannot be converted to java.time.DayOfWeek
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -18,6 +18,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
         List<Schedule> findByClassGroupId(Long classGroupId);
 
+        List<Schedule> findByClassroom_Id(Long classroomId);
+
         List<Schedule> findByTeacher(Teacher teacher);
 
         List<Schedule> findByTeacherId(Long teacherId);
@@ -46,6 +48,16 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                         "(s.startTime >= :startTime AND s.endTime <= :endTime))")
         List<Schedule> findConflictingClassSchedules(
                         @Param("classGroupId") Long classGroupId,
+                        @Param("dayOfWeek") DayOfWeek dayOfWeek,
+                        @Param("startTime") LocalTime startTime,
+                        @Param("endTime") LocalTime endTime);
+
+        @Query("SELECT s FROM Schedule s WHERE s.classroom.id = :classroomId AND s.dayOfWeek = :dayOfWeek " +
+                        "AND ((s.startTime <= :startTime AND s.endTime > :startTime) OR " +
+                        "(s.startTime < :endTime AND s.endTime >= :endTime) OR " +
+                        "(s.startTime >= :startTime AND s.endTime <= :endTime))")
+        List<Schedule> findConflictingClassroomSchedules(
+                        @Param("classroomId") Long classroomId,
                         @Param("dayOfWeek") DayOfWeek dayOfWeek,
                         @Param("startTime") LocalTime startTime,
                         @Param("endTime") LocalTime endTime);

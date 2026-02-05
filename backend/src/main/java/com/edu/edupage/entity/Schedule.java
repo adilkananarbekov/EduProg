@@ -40,7 +40,9 @@ public class Schedule {
     @Column(nullable = false)
     private LocalTime endTime;
 
-    private String room;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "classroom_id")
+    private Classroom classroom;
 
     private Integer lessonNumber; // e.g., 1st, 2nd, 3rd period
 }

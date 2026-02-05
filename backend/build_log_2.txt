@@ -1,0 +1,24 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.edu:edupage >---------------------------
+[INFO] Building edupage 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ edupage ---
+[INFO] Deleting C:\Users\Adilkan\Documents\EdupageProject\backend\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edupage ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ edupage ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 132 source files with javac [debug release 17] to target\classes
+[WARNING] /C:/Users/Adilkan/Documents/EdupageProject/backend/src/main/java/com/edu/edupage/dto/AuthResponse.java:[15,20] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  6.509 s
+[INFO] Finished at: 2026-02-05T22:35:11+06:00
+[INFO] ------------------------------------------------------------------------
