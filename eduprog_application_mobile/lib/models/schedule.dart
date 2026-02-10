@@ -1,16 +1,31 @@
 /// EduOps - Schedule Model
 library;
 
+import 'package:hive/hive.dart';
+
+part 'schedule.g.dart';
+
+@HiveType(typeId: 0)
 class Schedule {
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final String subjectName;
+  @HiveField(2)
   final String? subjectShortName; // Short name for compact UI (e.g., "Math")
+  @HiveField(3)
   final String teacherName;
+  @HiveField(4)
   final String className;
+  @HiveField(5)
   final String room;
+  @HiveField(6)
   final int dayOfWeek; // 1 = Monday, 7 = Sunday
+  @HiveField(7)
   final String startTime;
+  @HiveField(8)
   final String endTime;
+  @HiveField(9)
   final int lessonNumber;
 
   Schedule({

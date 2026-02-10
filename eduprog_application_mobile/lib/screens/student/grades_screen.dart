@@ -17,31 +17,28 @@ class GradesScreen extends StatefulWidget {
 class _GradesScreenState extends State<GradesScreen> {
   late GradeService _gradeService;
 
-  List<SubjectGrades> _subjectGrades = [];
-  double _overallAverage = 0;
-  bool _isLoading = true;
+  Stream<List<SubjectGrades>>? _gradesStream;
   final Set<String> _expandedSubjects = {};
 
   @override
   void initState() {
     super.initState();
     _gradeService = GradeService(ApiClient());
-    _loadGrades();
+    _gradesStream = _gradeService.getGradesBySubjectStream();
   }
 
-  Future<void> _loadGrades() async {
-    setState(() => _isLoading = true);
-    try {
-      final grades = await _gradeService.getGradesBySubject();
-      final average = await _gradeService.getOverallAverage();
-      setState(() {
-        _subjectGrades = grades;
-        _overallAverage = average;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() => _isLoading = false);
-    }
+  Future<void> _refresh() async {
+    setState(() {
+      _gradesStream = _gradeService.getGradesBySubjectStream();
+    });
+  }
+
+  double _calculateOverallAverage(List<SubjectGrades> subjectGrades) {
+    if (subjectGrades.isEmpty) return 0;
+    final allGrades = subjectGrades.expand((s) => s.grades).toList();
+    if (allGrades.isEmpty) return 0;
+    final sum = allGrades.fold<double>(0, (sum, g) => sum + g.percentage);
+    return sum / allGrades.length;
   }
 
   Color _getGradeColor(double percentage) {
@@ -68,44 +65,57 @@ class _GradesScreenState extends State<GradesScreen> {
         backgroundColor: AppColors.deepNavy,
         elevation: 0,
       ),
-      body: RefreshIndicator(
-        onRefresh: _loadGrades,
-        color: AppColors.deepNavy,
-        child: _isLoading
-            ? const Center(
-                child: CircularProgressIndicator(color: AppColors.deepNavy),
-              )
-            : CustomScrollView(
-                slivers: [
-                  // Overall Average Header
-                  SliverToBoxAdapter(child: _buildOverallHeader()),
+      body: StreamBuilder<List<SubjectGrades>>(
+        stream: _gradesStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.deepNavy),
+            );
+          }
 
-                  // Subject Grades
-                  SliverPadding(
-                    padding: const EdgeInsets.all(16),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          if (_subjectGrades.isEmpty) {
-                            return _buildEmptyState();
+          final subjectGrades = snapshot.data ?? [];
+          final overallAverage = _calculateOverallAverage(subjectGrades);
+
+          return RefreshIndicator(
+            onRefresh: _refresh,
+            color: AppColors.deepNavy,
+            child: CustomScrollView(
+              slivers: [
+                // Overall Average Header
+                SliverToBoxAdapter(child: _buildOverallHeader(overallAverage)),
+
+                // Subject Grades
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        if (subjectGrades.isEmpty) {
+                          if (snapshot.connectionState != ConnectionState.waiting) {
+                             return _buildEmptyState();
                           }
-                          return _buildSubjectCard(_subjectGrades[index]);
-                        },
-                        childCount: _subjectGrades.isEmpty
-                            ? 1
-                            : _subjectGrades.length,
-                      ),
+                          return const SizedBox.shrink();
+                        }
+                        return _buildSubjectCard(subjectGrades[index]);
+                      },
+                      childCount:
+                          subjectGrades.isEmpty ? 1 : subjectGrades.length,
                     ),
                   ),
+                ),
 
-                  const SliverToBoxAdapter(child: SizedBox(height: 80)),
-                ],
-              ),
+                const SliverToBoxAdapter(child: SizedBox(height: 80)),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildOverallHeader() {
+  Widget _buildOverallHeader(double average) {
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(24),
@@ -142,7 +152,7 @@ class _GradesScreenState extends State<GradesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    _overallAverage.toStringAsFixed(1),
+                    average.toStringAsFixed(1),
                     style: const TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.w700,
@@ -170,7 +180,7 @@ class _GradesScreenState extends State<GradesScreen> {
             ),
             child: Center(
               child: Text(
-                _getLetterGrade(_overallAverage),
+                _getLetterGrade(average),
                 style: const TextStyle(
                   fontSize: 36,
                   fontWeight: FontWeight.w700,

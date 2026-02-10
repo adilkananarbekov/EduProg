@@ -6,9 +6,11 @@ import '../core/constants/api_constants.dart';
 import '../core/network/api_client.dart';
 import '../core/network/api_exceptions.dart';
 import '../models/user.dart';
+import '../data/local/local_database_service.dart';
 
 class AuthService {
   final ApiClient _apiClient;
+  final LocalDatabaseService _localDb = LocalDatabaseService();
 
   AuthService(this._apiClient);
 
@@ -29,6 +31,9 @@ class AuthService {
         await _apiClient.saveRefreshToken(authResponse.refreshToken!);
       }
 
+      // Cache user
+      await _localDb.cacheUser(authResponse.user);
+
       return authResponse;
     } on DioException catch (e) {
       throw ApiException.fromDioError(e);
@@ -37,6 +42,7 @@ class AuthService {
 
   Future<void> logout() async {
     await _apiClient.clearTokens();
+    await _localDb.clearAll();
   }
 
   Future<bool> isLoggedIn() async {
@@ -44,11 +50,36 @@ class AuthService {
   }
 
   Future<User?> getCurrentUser() async {
+    // Try cache first
+    final cachedUser = _localDb.getUser();
+
+    // We can return cached user immediately, but we should also check API if possible to keep it fresh.
+    // However, existing signature returns Future<User?>.
+    // If we have cache, we return it.
+
+    if (cachedUser != null) {
+      // Fire and forget update
+      _updateUserCache();
+      return cachedUser;
+    }
+
     try {
       final response = await _apiClient.get(ApiConstants.profile);
-      return User.fromJson(response.data as Map<String, dynamic>);
+      final user = User.fromJson(response.data as Map<String, dynamic>);
+      await _localDb.cacheUser(user);
+      return user;
     } on DioException {
       return null;
+    }
+  }
+
+  Future<void> _updateUserCache() async {
+    try {
+      final response = await _apiClient.get(ApiConstants.profile);
+      final user = User.fromJson(response.data as Map<String, dynamic>);
+      await _localDb.cacheUser(user);
+    } catch (e) {
+      // Ignore errors in background update
     }
   }
 

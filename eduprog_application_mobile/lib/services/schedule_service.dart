@@ -6,13 +6,16 @@ import '../core/constants/api_constants.dart';
 import '../core/network/api_client.dart';
 import '../core/network/api_exceptions.dart';
 import '../models/schedule.dart';
+import '../data/repositories/base_repository.dart';
+import '../data/local/local_database_service.dart';
 
-class ScheduleService {
+class ScheduleService extends BaseRepository<Schedule> {
   final ApiClient _apiClient;
 
   ScheduleService(this._apiClient);
 
-  Future<List<Schedule>> getWeekSchedule() async {
+  // --- Private API Fetchers ---
+  Future<List<Schedule>> _fetchWeekSchedule() async {
     try {
       final response = await _apiClient.get(ApiConstants.scheduleWeek);
       final List<dynamic> data = response.data as List<dynamic>;
@@ -24,12 +27,49 @@ class ScheduleService {
     }
   }
 
-  Future<List<Schedule>> getTodaySchedule() async {
-    final weekSchedule = await getWeekSchedule();
-    final today = DateTime.now().weekday;
-    return weekSchedule.where((s) => s.dayOfWeek == today).toList()
-      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+  // --- Stream Methods (Cache + Live) ---
+
+  Stream<List<Schedule>> getWeekScheduleStream() {
+    return getListStream(
+      boxName: LocalDatabaseService.scheduleBox,
+      key: 'week_schedule',
+      apiCall: _fetchWeekSchedule,
+    );
   }
+
+  Stream<List<Schedule>> getTodayScheduleStream() {
+    return getWeekScheduleStream().map((schedules) {
+      final today = DateTime.now().weekday;
+      return schedules.where((s) => s.dayOfWeek == today).toList()
+        ..sort((a, b) => a.startTime.compareTo(b.startTime));
+    });
+  }
+
+  // --- Future Methods (Backward Compatibility) ---
+  // Returns the final result of the stream (fresh data if online, cache if offline)
+
+  Future<List<Schedule>> getWeekSchedule() async {
+    try {
+      final stream = getWeekScheduleStream();
+      if (await stream.isEmpty) return [];
+      return await stream.last;
+    } catch (e) {
+      // If error occurs, try to return what we have or empty
+      return [];
+    }
+  }
+
+  Future<List<Schedule>> getTodaySchedule() async {
+    try {
+       final stream = getTodayScheduleStream();
+       if (await stream.isEmpty) return [];
+       return await stream.last;
+    } catch (e) {
+       return [];
+    }
+  }
+
+  // --- Other Methods (Direct API for now, or could be cached similarly) ---
 
   Future<List<Schedule>> getAllSchedules() async {
     try {

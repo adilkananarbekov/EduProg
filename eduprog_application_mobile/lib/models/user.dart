@@ -1,14 +1,35 @@
 /// EduOps - User Model
 library;
 
-enum UserRole { student, teacher, admin, operator }
+import 'package:hive/hive.dart';
 
+part 'user.g.dart';
+
+@HiveType(typeId: 3)
+enum UserRole {
+  @HiveField(0)
+  student,
+  @HiveField(1)
+  teacher,
+  @HiveField(2)
+  admin,
+  @HiveField(3)
+  operator
+}
+
+@HiveType(typeId: 2)
 class User {
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final String email;
+  @HiveField(2)
   final String firstName;
+  @HiveField(3)
   final String lastName;
+  @HiveField(4)
   final UserRole role;
+  @HiveField(5)
   final bool enabled;
 
   User({

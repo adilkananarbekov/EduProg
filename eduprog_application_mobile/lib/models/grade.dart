@@ -1,14 +1,27 @@
 /// EduOps - Grade Model
 library;
 
+import 'package:hive/hive.dart';
+
+part 'grade.g.dart';
+
+@HiveType(typeId: 1)
 class Grade {
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final String subjectName;
+  @HiveField(2)
   final double value;
+  @HiveField(3)
   final double maxValue;
+  @HiveField(4)
   final String type; // QUIZ, EXAM, HOMEWORK, PROJECT
+  @HiveField(5)
   final String? description;
+  @HiveField(6)
   final String teacherName;
+  @HiveField(7)
   final DateTime date;
 
   Grade({

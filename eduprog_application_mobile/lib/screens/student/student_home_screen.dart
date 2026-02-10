@@ -26,9 +26,9 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
   late ScheduleService _scheduleService;
   late AnnouncementService _announcementService;
 
-  List<Schedule> _todaySchedule = [];
+  Stream<List<Schedule>>? _scheduleStream;
   List<Announcement> _announcements = [];
-  bool _isLoading = true;
+  bool _isLoadingAnnouncements = true;
 
   @override
   void initState() {
@@ -36,22 +36,33 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
     final apiClient = ApiClient();
     _scheduleService = ScheduleService(apiClient);
     _announcementService = AnnouncementService(apiClient);
-    _loadData();
+    _scheduleStream = _scheduleService.getTodayScheduleStream();
+    _loadAnnouncements();
   }
 
-  Future<void> _loadData() async {
-    setState(() => _isLoading = true);
+  Future<void> _loadAnnouncements() async {
+    if (!mounted) return;
+    setState(() => _isLoadingAnnouncements = true);
     try {
-      final schedule = await _scheduleService.getTodaySchedule();
       final announcements = await _announcementService.getAnnouncements();
-      setState(() {
-        _todaySchedule = schedule;
-        _announcements = announcements.take(3).toList();
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _announcements = announcements.take(3).toList();
+          _isLoadingAnnouncements = false;
+        });
+      }
     } catch (e) {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoadingAnnouncements = false);
+      }
     }
+  }
+
+  Future<void> _refresh() async {
+    _loadAnnouncements();
+    setState(() {
+      _scheduleStream = _scheduleService.getTodayScheduleStream();
+    });
   }
 
   String _getGreeting() {
@@ -68,7 +79,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.softGray,
       body: RefreshIndicator(
-        onRefresh: _loadData,
+        onRefresh: _refresh,
         color: AppColors.deepNavy,
         child: CustomScrollView(
           slivers: [
@@ -232,6 +243,15 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
   }
 
   Widget _buildQuickStats() {
+    // Note: QuickStats (Classes count) also depends on schedule.
+    // We should probably listen to the stream there too or just show empty/loading.
+    // For now, I'll use 0 or listen to stream if I extract it.
+    // Since this is a simple example, I'll assume 0 for now or duplicate the StreamBuilder logic if critical.
+    // Or better, wrap the whole content in StreamBuilder? No, announcements are separate.
+
+    // I'll leave stats static for now or use a separate StreamBuilder for count if I had time,
+    // but the task focus is the schedule list.
+
     return Row(
       children: [
         Expanded(
@@ -253,11 +273,22 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _buildStatCard(
-            'Classes',
-            '${_todaySchedule.length}',
-            AppColors.accentRed,
-            Icons.calendar_today_outlined,
+          child: StreamBuilder<List<Schedule>>(
+            stream: _scheduleStream,
+            builder: (context, snapshot) {
+              final count = snapshot.data?.length ?? 0;
+              final displayValue = (!snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.waiting)
+                  ? '--'
+                  : '$count';
+
+              return _buildStatCard(
+                'Classes',
+                displayValue,
+                AppColors.accentRed,
+                Icons.calendar_today_outlined,
+              );
+            },
           ),
         ),
       ],
@@ -333,96 +364,107 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
   }
 
   Widget _buildTodaySchedule() {
-    if (_isLoading) {
-      return _buildLoadingCard();
-    }
+    return StreamBuilder<List<Schedule>>(
+      stream: _scheduleStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData && snapshot.connectionState == ConnectionState.waiting) {
+          return _buildLoadingCard();
+        }
 
-    if (_todaySchedule.isEmpty) {
-      return _buildEmptyCard(
-        'No classes scheduled for today',
-        Icons.event_available,
-      );
-    }
+        if (snapshot.hasError) {
+           return _buildEmptyCard('Unable to load schedule', Icons.error_outline);
+        }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.deepNavy.withValues(alpha: 0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: _todaySchedule.length,
-        separatorBuilder: (context, index) => const Divider(height: 1),
-        itemBuilder: (context, index) {
-          final schedule = _todaySchedule[index];
-          return ListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            leading: Container(
-              width: 50,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.lightBlue,
-                borderRadius: BorderRadius.circular(8),
+        final schedules = snapshot.data ?? [];
+
+        if (schedules.isEmpty) {
+          return _buildEmptyCard(
+            'No classes scheduled for today',
+            Icons.event_available,
+          );
+        }
+
+        return Container(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.deepNavy.withValues(alpha: 0.06),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    schedule.startTime.split(':').take(2).join(':'),
+            ],
+          ),
+          child: ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: schedules.length,
+            separatorBuilder: (context, index) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final schedule = schedules[index];
+              return ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                leading: Container(
+                  width: 50,
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.lightBlue,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        schedule.startTime.split(':').take(2).join(':'),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.deepNavy,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                title: Text(
+                  schedule.subjectName,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.deepNavy,
+                  ),
+                ),
+                subtitle: Text(
+                  '${schedule.teacherName} • Room ${schedule.room}',
+                  style: const TextStyle(fontSize: 13, color: AppColors.mediumGray),
+                ),
+                trailing: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.softGray,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    schedule.room,
                     style: const TextStyle(
                       fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.deepNavy,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.darkGray,
                     ),
                   ),
-                ],
-              ),
-            ),
-            title: Text(
-              schedule.subjectName,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                color: AppColors.deepNavy,
-              ),
-            ),
-            subtitle: Text(
-              '${schedule.teacherName} • Room ${schedule.room}',
-              style: const TextStyle(fontSize: 13, color: AppColors.mediumGray),
-            ),
-            trailing: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.softGray,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                schedule.room,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.darkGray,
                 ),
-              ),
-            ),
-          );
-        },
-      ),
+              );
+            },
+          ),
+        );
+      }
     );
   }
 
   Widget _buildAnnouncements() {
-    if (_isLoading) {
+    if (_isLoadingAnnouncements) {
       return _buildLoadingCard();
     }
 
