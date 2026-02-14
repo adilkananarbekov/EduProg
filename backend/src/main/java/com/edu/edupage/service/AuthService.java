@@ -28,6 +28,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
+    private final ActivityLogService activityLogService;
 
     public AuthResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -86,6 +87,12 @@ public class AuthService {
 
             teacherRepository.save(teacher);
         }
+
+        activityLogService.logActivity(
+                "USER_REGISTERED",
+                "New " + request.getRole().toString().toLowerCase() + " registered: " + user.getFirstName() + " "
+                        + user.getLastName(),
+                user.getId());
 
         String token = jwtTokenProvider.generateToken(user.getEmail());
         return buildAuthResponse(user, token);

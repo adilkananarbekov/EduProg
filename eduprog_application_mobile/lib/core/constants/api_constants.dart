@@ -9,9 +9,9 @@ class ApiConstants {
   // local IP address below (find it with 'ipconfig' on Windows).
   // Example: '192.168.1.100'
   // ============================================================
-  static const String _physicalDeviceIP = '192.168.0.102'; // Your computer's IP
+  static const String _physicalDeviceIP = '192.168.0.104'; // Your computer's IP
 
-  // Base URLs for different platforms
+  // Base URLs for different platforms`
   static const String _emulatorUrl = 'http://10.0.2.2:8080';
   static const String _iosSimulatorUrl = 'http://localhost:8080';
 

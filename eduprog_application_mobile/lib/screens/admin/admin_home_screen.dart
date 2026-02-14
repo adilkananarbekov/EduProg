@@ -19,6 +19,7 @@ class AdminHomeScreen extends StatefulWidget {
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   late final AdminService _adminService;
   Map<String, int> _stats = {};
+  List<Map<String, dynamic>> _activities = [];
   bool _isLoading = true;
 
   @override
@@ -32,9 +33,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     setState(() => _isLoading = true);
     try {
       final stats = await _adminService.getDashboardStats();
+      final activities = await _adminService.getRecentActivities();
       if (mounted) {
         setState(() {
           _stats = stats;
+          _activities = activities;
           _isLoading = false;
         });
       }
@@ -207,14 +210,21 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                       size: 32,
                     ),
                     title: const Text(
-                      'Schedule Simulation',
+                      'Auto Schedule Generator',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: const Text(
                       'Auto-generate class schedules based on subject requirements',
                     ),
                     trailing: ElevatedButton(
-                      onPressed: _showSimulationDialog,
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('This feature is not available'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      },
                       child: const Text('Run'),
                     ),
                   ),
@@ -429,23 +439,21 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   }
 
   Widget _buildRecentActivity() {
-    final activities = [
-      {
-        'title': 'New student registered',
-        'time': '2 hours ago',
-        'icon': Icons.person_add,
-      },
-      {
-        'title': 'Announcement posted',
-        'time': '5 hours ago',
-        'icon': Icons.campaign,
-      },
-      {
-        'title': 'Schedule updated',
-        'time': '1 day ago',
-        'icon': Icons.calendar_today,
-      },
-    ];
+    if (_activities.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Center(
+          child: Text(
+            'No recent activity',
+            style: TextStyle(color: AppColors.mediumGray),
+          ),
+        ),
+      );
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -462,10 +470,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       child: ListView.separated(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: activities.length,
+        itemCount: _activities.length,
         separatorBuilder: (context, index) => const Divider(height: 1),
         itemBuilder: (context, index) {
-          final activity = activities[index];
+          final activity = _activities[index];
           return ListTile(
             leading: Container(
               padding: const EdgeInsets.all(8),
@@ -474,25 +482,21 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
-                activity['icon'] as IconData,
+                _getActivityIcon(activity['action'] ?? ''),
                 color: AppColors.deepNavy,
                 size: 20,
               ),
             ),
             title: Text(
-              activity['title'] as String,
+              activity['description'] ?? 'Unknown Activity',
               style: const TextStyle(
                 fontWeight: FontWeight.w500,
                 color: AppColors.deepNavy,
               ),
             ),
             subtitle: Text(
-              activity['time'] as String,
+              _formatTimeAgo(activity['timestamp']),
               style: const TextStyle(fontSize: 12, color: AppColors.mediumGray),
-            ),
-            trailing: const Icon(
-              Icons.chevron_right,
-              color: AppColors.mediumGray,
             ),
           );
         },
@@ -500,58 +504,30 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     );
   }
 
-  void _showSimulationDialog() {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Run Schedule Simulation'),
-        content: const Text(
-          'This will attempt to generate a weekly schedule for all classes based on assigned teachers and subjects. Existing schedules might be affected.\n\nProceed?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(dialogContext);
-              setState(() => _isLoading = true);
-              try {
-                // Sending basic request - backend uses defaults
-                await _adminService.simulateSchedule({
-                  'lessonDurationMinutes': 45,
-                  'breakDurationMinutes': 10,
-                  'dayStartTime': '08:00',
-                  'dayEndTime': '15:00',
-                  'teacherSubjectMappings':
-                      [], // Should ideally be populated or backend handles default
-                });
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Schedule simulation completed successfully',
-                      ),
-                    ),
-                  );
-                }
-              } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Simulation failed: $e')),
-                  );
-                }
-              } finally {
-                if (mounted) {
-                  setState(() => _isLoading = false);
-                }
-              }
-            },
-            child: const Text('Run Simulation'),
-          ),
-        ],
-      ),
-    );
+  IconData _getActivityIcon(String action) {
+    if (action.contains('USER')) return Icons.person_add;
+    if (action.contains('ANNOUNCEMENT')) return Icons.campaign;
+    if (action.contains('SCHEDULE')) return Icons.calendar_today;
+    return Icons.notifications_active;
+  }
+
+  String _formatTimeAgo(String? timestamp) {
+    if (timestamp == null) return '';
+    try {
+      final date = DateTime.parse(timestamp);
+      final difference = DateTime.now().difference(date);
+
+      if (difference.inDays > 0) {
+        return '${difference.inDays}d ago';
+      } else if (difference.inHours > 0) {
+        return '${difference.inHours}h ago';
+      } else if (difference.inMinutes > 0) {
+        return '${difference.inMinutes}m ago';
+      } else {
+        return 'Just now';
+      }
+    } catch (e) {
+      return '';
+    }
   }
 }

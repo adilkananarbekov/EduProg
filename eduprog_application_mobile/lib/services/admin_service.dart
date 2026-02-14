@@ -125,4 +125,14 @@ class AdminService {
   Future<void> updateClassroom(int id, Map<String, dynamic> data) async {
     await _apiClient.put('/api/admin/classrooms/$id', data: data);
   }
+
+  // Get recent activities
+  Future<List<Map<String, dynamic>>> getRecentActivities() async {
+    try {
+      final response = await _apiClient.get('/api/admin/activities');
+      return List<Map<String, dynamic>>.from(response.data as List);
+    } on DioException {
+      return [];
+    }
+  }
 }

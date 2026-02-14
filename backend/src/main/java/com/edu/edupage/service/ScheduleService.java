@@ -26,6 +26,7 @@ public class ScheduleService {
         private final SubjectRepository subjectRepository;
         private final ClassroomRepository classroomRepository;
         private final StudentRepository studentRepository;
+        private final ActivityLogService activityLogService;
 
         @Transactional
         public List<ScheduleDTO> getStudentSchedule(Student detachedStudent) {
@@ -145,6 +146,22 @@ public class ScheduleService {
                 }
 
                 schedule = scheduleRepository.save(schedule);
+
+                try {
+                        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
+                                        .getContext().getAuthentication();
+                        if (auth != null && auth.getPrincipal() instanceof User) {
+                                User currentUser = (User) auth.getPrincipal();
+                                activityLogService.logActivity(
+                                                "SCHEDULE_CREATED",
+                                                "New schedule created for " + classGroup.getName() + " - "
+                                                                + subject.getName(),
+                                                currentUser.getId());
+                        }
+                } catch (Exception e) {
+                        // Ignore logging errors
+                }
+
                 return mapToDTO(schedule);
         }
 

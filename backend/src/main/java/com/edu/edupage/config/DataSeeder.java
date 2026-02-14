@@ -319,6 +319,9 @@ public class DataSeeder implements CommandLineRunner {
                 int[] periods = { 1, 2, 3, 4, 5, 6 };
                 LocalTime startOfDay = LocalTime.of(8, 0);
 
+                // Track teacher availability: TeacherID -> Day -> Set of Periods
+                Map<Long, Map<DayOfWeek, Set<Integer>>> teacherScheduleMap = new HashMap<>();
+
                 for (DayOfWeek day : days) {
                         for (int period : periods) {
                                 LocalTime startTime = startOfDay.plusMinutes((period - 1) * 55);
@@ -339,33 +342,73 @@ public class DataSeeder implements CommandLineRunner {
                                                 continue;
 
                                         Subject subject = subjects.get(random.nextInt(subjects.size()));
-                                        Teacher teacher = findTeacherForSubject(teachers, subject); // Note: This naive
-                                                                                                    // logic allows
-                                                                                                    // teacher
-                                                                                                    // conflicts.
 
-                                        // To fix teacher conflicts, we'd need to track teacher availability per slot.
-                                        // For simplicity in seeding, we'll allow it or skip if teacher busy?
-                                        // Let's rely on robust volume.
+                                        // Improved Teacher Selection Logic
+                                        Teacher selectedTeacher = null;
+                                        List<Teacher> qualifiedTeachers = findQualifiedTeachers(teachers, subject);
+                                        Collections.shuffle(qualifiedTeachers); // Randomize to distribute load
+
+                                        for (Teacher teacher : qualifiedTeachers) {
+                                                // Check if teacher is free
+                                                if (isTeacherFree(teacherScheduleMap, teacher.getId(), day, period)) {
+                                                        selectedTeacher = teacher;
+                                                        break;
+                                                }
+                                        }
+
+                                        // If no teacher is available for this subject in this slot, skip this slot for
+                                        // this group
+                                        if (selectedTeacher == null) {
+                                                continue;
+                                        }
 
                                         Classroom classroom = availableRooms.remove(0);
 
-                                        if (teacher != null) {
-                                                schedules.add(scheduleRepository.save(Schedule.builder()
-                                                                .classGroup(group)
-                                                                .teacher(teacher)
-                                                                .subject(subject)
-                                                                .dayOfWeek(day)
-                                                                .startTime(startTime)
-                                                                .endTime(endTime)
-                                                                .classroom(classroom)
-                                                                .lessonNumber(period)
-                                                                .build()));
-                                        }
+                                        // Book the teacher
+                                        bookTeacher(teacherScheduleMap, selectedTeacher.getId(), day, period);
+
+                                        schedules.add(scheduleRepository.save(Schedule.builder()
+                                                        .classGroup(group)
+                                                        .teacher(selectedTeacher)
+                                                        .subject(subject)
+                                                        .dayOfWeek(day)
+                                                        .startTime(startTime)
+                                                        .endTime(endTime)
+                                                        .classroom(classroom)
+                                                        .lessonNumber(period)
+                                                        .build()));
                                 }
                         }
                 }
                 return schedules;
+        }
+
+        private List<Teacher> findQualifiedTeachers(List<Teacher> teachers, Subject subject) {
+                return teachers.stream()
+                                .filter(t -> t.getSubjects().contains(subject))
+                                .collect(Collectors.toList());
+        }
+
+        private boolean isTeacherFree(Map<Long, Map<DayOfWeek, Set<Integer>>> scheduleMap, Long teacherId,
+                        DayOfWeek day, int period) {
+                return !scheduleMap.computeIfAbsent(teacherId, k -> new HashMap<>())
+                                .computeIfAbsent(day, k -> new HashSet<>())
+                                .contains(period);
+        }
+
+        private void bookTeacher(Map<Long, Map<DayOfWeek, Set<Integer>>> scheduleMap, Long teacherId, DayOfWeek day,
+                        int period) {
+                scheduleMap.computeIfAbsent(teacherId, k -> new HashMap<>())
+                                .computeIfAbsent(day, k -> new HashSet<>())
+                                .add(period);
+        }
+
+        /*
+         * Deprecated helper, replaced by findQualifiedTeachers
+         */
+        private Teacher findTeacherForSubject(List<Teacher> teachers, Subject subject) {
+                // ... kept for compatibility if needed, but unused in new logic
+                return null;
         }
 
         private Teacher findTeacherForSubject(List<Teacher> teachers, Subject subject) {

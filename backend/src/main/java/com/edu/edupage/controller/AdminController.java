@@ -29,6 +29,7 @@ public class AdminController {
         private final SubjectRepository subjectRepository;
         private final ParentRepository parentRepository;
         private final ScheduleService scheduleService;
+        private final ActivityLogService activityLogService;
         private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
         // ========== Users ==========
@@ -291,6 +292,12 @@ public class AdminController {
         public ResponseEntity<List<com.edu.edupage.dto.ScheduleDTO>> simulateSchedule(
                         @RequestBody com.edu.edupage.dto.GenerateScheduleRequest request) {
                 return ResponseEntity.ok(scheduleService.generateSchedule(request));
+        }
+
+        // ========== Activities ==========
+        @GetMapping("/activities")
+        public ResponseEntity<List<ActivityLog>> getRecentActivities() {
+                return ResponseEntity.ok(activityLogService.getRecentActivities());
         }
 
         // ========== Mappers ==========
